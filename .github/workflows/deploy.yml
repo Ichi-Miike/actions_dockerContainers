@@ -18,6 +18,10 @@ jobs:
       MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
       PORT: 8080
     steps:
+      - name: Update Node version
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
       - name: Get Code
         uses: actions/checkout@v3
       - name: Cache dependencies
@@ -25,6 +29,8 @@ jobs:
         with:
           path: ~/.npm
           key: ${{ env.CACHE_KEY }}-${{ hashFiles('**/package-lock.json') }}
+      - name: Update package versions
+        run: npm audit fix
       - name: Install dependencies
         run: npm ci
       - name: Run server
